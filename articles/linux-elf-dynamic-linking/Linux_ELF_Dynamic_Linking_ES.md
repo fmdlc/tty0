@@ -785,7 +785,11 @@ Disassembly of section .plt:
  63c:	d61f0220 	br	x17
 ```
 
-Acá ocurre lo que describimos antes: la entrada de la PLT carga una dirección desde la GOT y salta hacia ella. Esa dirección será inicialmente el resolver del dynamic linker, y luego, una vez resuelta, apuntará directamente a la implementación real en la `libc`. También podemos hacer lo mismo con la GOT:
+Acá ya se empieza a ver la relación entre ambas estructuras. La entrada de la PLT no contiene la dirección final de la función que queremos ejecutar. Lo que hace es cargar una dirección desde memoria y saltar hacia ella. Esa dirección sale de la GOT.
+
+Dicho de otra forma: la PLT pone el código intermedio; la GOT pone el puntero que ese código va a usar. Si ese puntero todavía no apunta a la función real, la ejecución termina en el resolver del dynamic linker. Si ya fue resuelto, el salto va directo a la implementación final en la `libc`.
+
+También podemos mirar la GOT directamente:
 
 ```text
 %: objdump -s -j .got ./hello_world
@@ -802,14 +806,12 @@ Contents of section .got:
  1fff0 58070000 00000000 00000000 00000000  X...............
 ```
 
-A primera vista, esto puede parecer simplemente una serie de números sin sentido. Pero en realidad, cada uno de estos valores representa direcciones en la memoria. La GOT no almacena código, sino punteros. Es una tabla de direcciones que el programa utiliza para resolver funciones y símbolos en tiempo de ejecución.
+A primera vista, esto parece una serie de números sin demasiado sentido. Pero no es ruido: son direcciones. La GOT no guarda instrucciones, guarda punteros que el programa va a consultar cuando necesite resolver funciones externas.
 
-En el contexto del linking dinámico, cada entrada de la GOT corresponde a una función externa. Inicialmente, muchas de estas direcciones no apuntan a la función real, sino a un resolver del dynamic linker.
-
-Esto significa que, cuando el programa se ejecuta por primera vez y se invoca una función de una biblioteca externa, la PLT consulta la GOT y encuentra una dirección intermedia. Esa dirección redirige la ejecución hacia el dynamic linker, que se encarga de resolver la función en la `libc`.  
+Al inicio, varios de esos punteros todavía no apuntan a la función real. Apuntan al resolver del dynamic linker. Por eso la primera llamada no cae de inmediato en la `libc`: pasa antes por ese paso intermedio.  
 <img src="../../assets/plt-got-flow.png" alt="PLT and GOT flow" width="460" />
 
-A partir de ese momento, la misma entrada ya no apunta al resolver, sino directamente a la función en la `libc`, evitando cualquier costo adicional en llamadas posteriores.  
+A partir de ese momento, la misma entrada de la GOT ya no vuelve al resolver. Queda apuntando a la función correcta en la `libc`, y las llamadas siguientes evitan ese trabajo extra.  
 
 Pero esto no es algo que ocurra una sola vez ni que esté limitado a `__libc_start_main`. Cada vez que nuestro programa invoca una función externa (como `printf`) el flujo vuelve a pasar por la PLT.  
 Podemos ver esto inspeccionando nuestro propio código. Si desensamblamos nuestra función `main`, vamos a encontrar llamadas que no apuntan directamente a la `libc`, sino a la PLT:

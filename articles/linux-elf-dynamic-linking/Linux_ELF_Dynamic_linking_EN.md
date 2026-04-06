@@ -765,9 +765,11 @@ Disassembly of section .plt:
  63c:	d61f0220 	br	x17
 ```
 
-The PLT entry loads an address from the GOT and jumps to it. That address initially points to the dynamic linker resolver; once resolved, it points directly to the implementation in `libc`.
+This is where the relationship between both structures starts to become visible. A PLT entry does not contain the final address of the function we want to call. What it actually does is load an address from memory and jump to it. That address comes from the GOT.
 
-We can do the same with the GOT:
+So the split is practical rather than abstract: the PLT contains the intermediate code stub, while the GOT contains the pointer that stub will use. If that pointer still leads to the dynamic linker resolver, execution goes there first. If it has already been fixed up, the jump goes straight into the real implementation in `libc`.
+
+We can look at the GOT directly as well:
 
 ```text
 %: objdump -s -j .got ./hello_world
@@ -784,9 +786,11 @@ Contents of section .got:
  1fff0 58070000 00000000 00000000 00000000  X...............
 ```
 
-At first sight this may seem like meaningless numbers, but each of these values is an address in memory. The GOT does not store code, only pointers.
+At first sight this may look like meaningless numbers, but it is not noise. Those values are addresses. The GOT does not store instructions; it stores pointers the program will consult when it needs to reach external functions.
 
 <img src="../../assets/plt-got-flow.png" alt="PLT and GOT flow" width="460" />
+
+At the beginning, several of those pointers still do not lead to the final function. They lead to the dynamic linker resolver instead. That is why the first call does not land immediately in `libc`: it takes one intermediate step first.
 
 From that point on, the GOT already contains the correct address. Subsequent calls no longer need resolution. The PLT simply reads the address from the GOT and jumps directly to the function.
 
