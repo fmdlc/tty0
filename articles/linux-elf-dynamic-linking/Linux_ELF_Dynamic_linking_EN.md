@@ -786,7 +786,7 @@ Contents of section .got:
 
 At first sight this may seem like meaningless numbers, but each of these values is an address in memory. The GOT does not store code, only pointers.
 
-![PLT and GOT flow](../../assets/plt-got-flow.svg)
+![PLT and GOT flow](../../assets/plt-got-flow.png)
 
 This does not happen only once, nor is it limited to `__libc_start_main`. Every time our program invokes an external function such as `printf`, the flow goes back through the PLT.
 
