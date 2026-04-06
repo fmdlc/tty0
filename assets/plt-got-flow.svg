@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1116" height="921" viewBox="0 0 1116 921" fill="none">
+  <rect width="1116" height="921" fill="#ffffff"/>
+
+  <defs>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0 0L12 6L0 12V0Z" fill="#3a3a3c"/>
+    </marker>
+    <marker id="arrow-dashed" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0 0L12 6L0 12V0Z" fill="#3a3a3c"/>
+    </marker>
+    <style>
+      .box { fill:#f1edff; stroke:#9b84ff; stroke-width:2; rx:14; ry:14; }
+      .label { fill:#ececec; rx:8; ry:8; }
+      .line { stroke:#3a3a3c; stroke-width:5; fill:none; marker-end:url(#arrow); }
+      .dash { stroke:#3a3a3c; stroke-width:5; fill:none; stroke-dasharray:10 10; marker-end:url(#arrow-dashed); }
+      .t1 { font: 400 34px -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif; fill:#3a3a3c; }
+      .t2 { font: 400 26px -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif; fill:#3a3a3c; }
+      .t3 { font: 400 18px -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif; fill:#5a5a5f; }
+    </style>
+  </defs>
+
+  <rect class="box" x="453" y="16" width="232" height="132"/>
+  <text class="t1" x="569" y="64" text-anchor="middle">Program calls</text>
+  <text class="t1" x="569" y="108" text-anchor="middle">a library</text>
+
+  <rect class="box" x="528" y="255" width="84" height="110"/>
+  <text class="t1" x="570" y="322" text-anchor="middle">PLT</text>
+
+  <rect class="box" x="174" y="491" width="262" height="106"/>
+  <text class="t1" x="305" y="558" text-anchor="middle">Dynamic Linker</text>
+
+  <rect class="box" x="355" y="759" width="174" height="90"/>
+  <text class="t1" x="442" y="814" text-anchor="middle">GOT Entry</text>
+
+  <rect class="box" x="743" y="759" width="150" height="90"/>
+  <text class="t1" x="818" y="814" text-anchor="middle">Library</text>
+
+  <rect class="label" x="239" y="390" width="130" height="44"/>
+  <text class="t2" x="304" y="420" text-anchor="middle">First call</text>
+
+  <rect class="label" x="510" y="548" width="119" height="44"/>
+  <text class="t2" x="569" y="578" text-anchor="middle">Read by</text>
+
+  <rect class="label" x="688" y="547" width="254" height="44"/>
+  <text class="t2" x="815" y="577" text-anchor="middle">Subsequent calls</text>
+
+  <rect class="label" x="185" y="625" width="184" height="44"/>
+  <text class="t2" x="277" y="655" text-anchor="middle">Updates pointer</text>
+
+  <path class="line" d="M569 150V250"/>
+  <path class="line" d="M528 335L306 459"/>
+  <path class="line" d="M437 545L742 760"/>
+  <path class="line" d="M613 334C758 373 817 528 817 757"/>
+
+  <path class="dash" d="M305 598C305 660 360 696 430 758"/>
+  <path class="dash" d="M441 758C496 700 555 612 568 368"/>
+
+  <path class="line" d="M568 368C568 531 569 639 569 748"/>
+</svg>

@@ -1,7 +1,8 @@
 ---
 layout: article
 title: "ELF & Dynamic Linking (ES)"
-permalink: /Linux_ELF_Dynamic_Linking_ES.html
+permalink: /articles/linux-elf-dynamic-linking/Linux_ELF_Dynamic_Linking_ES.html
+source_code_url: "https://github.com/fmdlc/tty0/tree/main/articles/linux-elf-dynamic-linking/src"
 ---
 
 # **ELF & Dynamic Linking**
@@ -45,7 +46,7 @@ A grandes rasgos, un archivo ELF se divide en tres partes principales:
 
 Todo esto no es teoría: lo podemos ver fácilmente desde cualquier distribución de Linux. Vamos a necesitar algunas herramientas básicas como `gcc`, `strace`, `ps`, `readelf`, `objdump` y, por supuesto, un editor de texto (`Vim` \<3).
 
-> Nota: el código fuente de los ejemplos del artículo está disponible en `./src`. Ahí también hay un `README.md` mínimo, y en la raíz del proyecto incluí un `Makefile` para compilar los binarios tal como se usan en los ejemplos.
+> Nota: el código fuente de los ejemplos del artículo está disponible en `./src`. Ahí también hay un `README.md` mínimo, y en este mismo directorio incluí un `Makefile` para compilar los binarios tal como se usan en los ejemplos.
 
 # **Un misterioso viaje al kernel de Linux**
 
@@ -141,7 +142,7 @@ En Unix, las conexiones de red se representan como sockets, un tipo especial de 
 ```
 
 Los FIle Descriptors son heredados a través de fork, lo que significa que el proceso hijo comienza con los mismos canales de entrada y salida que su padre. Es por eso que, cuando ejecutamos un programa desde el shell, su entrada y salida aparecen en la misma terminal.   
-![Fork and copy-on-write](assets/fork-copy-on-write.png)  
+![Fork and copy-on-write](../../assets/fork-copy-on-write.png)  
 Sin embargo, esa “copia” no implica que el kernel duplique toda la memoria inmediatamente. En la práctica, Linux utiliza un mecanismo llamado **copy-on-write (CoW)**.  
 Al momento del fork, padre e hijo comparten las mismas páginas de memoria de forma temporal. Recién cuando uno de los dos intenta modificar esa memoria, el kernel crea una copia independiente.
 
@@ -549,7 +550,7 @@ Por lo cual recordemos un concepto clave:
 **Los segmentos definen cómo vive la memoria.**
 
 Entonces podemos decir que siempre que hablamos del binario, sin ejecutar almacenado en nuestro disco, estamos hablando de secciones, y al ejecutarlo estas se transforman en segmentos.   
-![ELF memory layout](assets/elf-memory-layout.png)  
+![ELF memory layout](../../assets/elf-memory-layout.png)  
 Este diagrama muestra cómo un archivo ELF en disco se transforma en un proceso en memoria al momento de ejecutarse. En la parte inferior aparecen las secciones del binario, como .text, .rodata, .data y .bss, que representan el programa tal como fue compilado. Estas secciones no se cargan de forma aislada, sino que el kernel las agrupa y mapea en memoria a través de los segmentos que vimos anteriormente.
 
 A medida que subimos en el espacio de direcciones, aparecen otras regiones que no provienen directamente del ELF, como las librerías compartidas, que son cargadas dinámicamente (por ejemplo, `libc` y el dynamic linker). Por encima de ellas se encuentra el heap, que crece hacia direcciones de memoria más altas a medida que el programa solicita memoria dinámica, y finalmente el stack, que crece en sentido contrario y almacena el contexto de ejecución de las funciones.
@@ -672,6 +673,53 @@ bl __libc_start_main@plt
 
 Esta llamada transfiere el control a `__libc_start_main`, una función de la `libc` encargada de continuar la ejecución del programa. A partir de este punto, la `libc` (o `glibc` en GNU) toma el control: inicializa el entorno necesario y finalmente invoca a la función `main` de nuestro programa. Pero hay un detalle clave: como nuestro binario está linkeado dinámicamente, esa llamada no es directa.
 
+## Relocations: cuando las direcciones todavía no existen
+
+Hasta ahora vimos cómo el sistema puede reconocer un binario ELF, mapear sus segmentos en memoria y comenzar su ejecución. También vimos que, en muchos casos, ese binario no está completamente “cerrado”: depende de librerías externas y de símbolos que no están definidos dentro del propio archivo. Esto nos deja frente a una pregunta bastante incómoda pero inevitable: ¿cómo puede ejecutarse un programa si muchas de las direcciones que necesita simplemente no existen todavía?
+
+La respuesta está en uno de los mecanismos más importantes (y muchas veces invisibles) del formato ELF: las relocations.
+
+Cuando compilamos un programa, el compilador y el linker hacen todo lo posible por resolver direcciones. Sin embargo, hay casos donde esto no es posible. Si el programa utiliza librerías dinámicas, como `libc`, el compilador sabe que se va a necesitar una función como `printf`, pero no tiene forma de saber en qué dirección exacta va a vivir esa función en memoria. Esa decisión ocurre mucho más tarde, en tiempo de ejecución, cuando el sistema operativo carga tanto el binario como sus dependencias.
+
+Esto significa que el ejecutable se construye con “huecos” conceptuales. Lugares donde debería haber una dirección válida, pero todavía no la hay. En lugar de fallar, el formato ELF adopta una estrategia mucho más interesante: deja instrucciones pendientes. Marca explícitamente todos los puntos donde será necesario intervenir más adelante y delega esa responsabilidad al loader.
+
+Esas instrucciones pendientes son las relocations.
+
+Si inspeccionamos un binario con `readelf -r`, lo que encontramos no es otra cosa que una lista de tareas. Cada entrada indica un offset en memoria que deberá ser modificado, el tipo de operación que hay que realizar y el símbolo que se necesita resolver. No hay magia: el archivo está diciendo, de forma bastante directa, “cuando cargues esto, vas a tener que venir acá y escribir la dirección real de este símbolo”.
+
+```text
+%: readelf -r ./hello_world
+
+Relocation section '.rela.dyn' at offset 0x480 contains 8 entries:
+  Offset          Info           Type           Sym. Value    Sym. Name + Addend
+00000001fd90  000000000403 R_AARCH64_RELATIV                    750
+000000020008  000000000403 R_AARCH64_RELATIV                  20008
+00000001ffd8  000400000401 R_AARCH64_GLOB_DA 0000000000000000 _ITM_deregisterTM[...] + 0
+00000001ffe0  000500000401 R_AARCH64_GLOB_DA 0000000000000000 __cxa_finalize@GLIBC_2.17 + 0
+00000001ffe8  000600000401 R_AARCH64_GLOB_DA 0000000000000000 __gmon_start__ + 0
+
+Relocation section '.rela.plt' at offset 0x540 contains 5 entries:
+  Offset          Info           Type           Sym. Value    Sym. Name + Addend
+00000001ffa8  000300000402 R_AARCH64_JUMP_SL 0000000000000000 __libc_start_main@GLIBC_2.34 + 0
+00000001ffb0  000500000402 R_AARCH64_JUMP_SL 0000000000000000 __cxa_finalize@GLIBC_2.17 + 0
+00000001ffb8  000600000402 R_AARCH64_JUMP_SL 0000000000000000 __gmon_start__ + 0
+00000001ffc8  000800000402 R_AARCH64_JUMP_SL 0000000000000000 puts@GLIBC_2.17 + 0
+```
+
+A primera vista el output puede parecer bastante críptico, pero todas las entradas siguen una misma lógica. Cada fila indica un lugar en memoria (`Offset`) que deberá ser modificado, el tipo de operación que se aplicará y, en algunos casos, el símbolo que necesita resolverse.
+
+Por ejemplo, las entradas de tipo `R_AARCH64_JUMP_SLOT` (como la asociada a `puts`) corresponden a funciones externas. En estos casos, el dynamic linker deberá encontrar la dirección real de la función dentro de `libc` y escribirla en la ubicación indicada. A partir de ese momento, las llamadas a esa función podrán resolverse correctamente.
+
+En cambio, las entradas `R_AARCH64_RELATIVE` no dependen de símbolos externos, sino que ajustan direcciones relativas en función de dónde fue cargado el binario en memoria. Esto es especialmente importante en presencia de ASLR, donde las direcciones cambian en cada ejecución.
+
+En este punto entra en juego el dynamic linker. Antes de que nuestro programa empiece a ejecutar su `main`, este componente ya estuvo trabajando. Carga las librerías necesarias, construye una tabla de símbolos en memoria y luego recorre cada una de las relocations del binario. Para cada entrada, busca la dirección real del símbolo correspondiente y la escribe en el lugar indicado. Ese proceso de “parcheo” es lo que transforma un binario parcialmente definido en algo completamente ejecutable.
+
+Este mecanismo no ocurre en el vacío, sino que está profundamente conectado con otras estructuras que veremos a cotinuacion, la GOT y la PLT. En muchos casos, las relocations no escriben directamente en el código, sino en entradas de la GOT. La PLT, a su vez, utiliza esas entradas como puntos de salto hacia funciones reales. Es un sistema diseñado para permitir flexibilidad: las direcciones pueden cambiar, pero el programa sigue funcionando porque sabe dónde buscarlas indirectamente.
+
+Esto también explica por qué conceptos como ASLR no rompen todo. Si las direcciones fueran fijas, cualquier aleatorización de memoria haría que el programa deje de funcionar. Pero como el ELF ya está preparado para corregir direcciones en tiempo de carga, puede adaptarse dinámicamente a cada ejecución. Las relocations no son un detalle de implementación: son la razón por la cual todo esto es posible.
+
+Si lo pensamos en términos simples, antes de aplicar relocations el programa contiene referencias incompletas. Después de que el dynamic linker hace su trabajo, esas referencias se convierten en direcciones reales, listas para ser ejecutadas. Es el momento en el que el binario deja de ser una plantilla y pasa a ser un proceso vivo en memoria.
+
 Cuando vemos en el desensamblado algo como `__libc_start_main@plt`, lo que realmente está ocurriendo es que la ejecución pasa por una capa intermedia diseñada para el linking dinámico: la **PLT** (*Procedure Linkage Table*) y la **GOT** (*Global Offset Table*).
 
 ## **PLT y GOT**
@@ -761,7 +809,7 @@ En el contexto del linking dinámico, cada entrada de la GOT corresponde a una f
 Esto significa que, cuando el programa se ejecuta por primera vez y se invoca una función de una biblioteca externa, la PLT consulta la GOT y encuentra una dirección intermedia. Esa dirección redirige la ejecución hacia el dynamic linker, que se encarga de resolver la función en la `libc`.  
 A partir de ese momento, la misma entrada ya no apunta al resolver, sino directamente a la función en la `libc`, evitando cualquier costo adicional en llamadas posteriores.  
 <p align="center">
-![PLT, GOT and libc diagram](assets/plt-got-libc.png)
+![PLT and GOT flow](../../assets/plt-got-flow.svg)
 </p>
 
 Pero esto no es algo que ocurra una sola vez ni que esté limitado a `__libc_start_main`. Cada vez que nuestro programa invoca una función externa (como `printf`) el flujo vuelve a pasar por la PLT.  

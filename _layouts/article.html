@@ -12,8 +12,10 @@
     <div class="page-content">
       <div class="wrapper">
         <div class="topbar">
-          <a href="./index.html">&#8592;</a>
-          <a href="https://github.com/fmdlc/tty0/tree/main/src" target="_blank" rel="noreferrer noopener">Source Code</a>
+          <a href="{{ '/' | relative_url }}">&#8592;</a>
+          {% if page.source_code_url %}
+          <a href="{{ page.source_code_url }}" target="_blank" rel="noreferrer noopener">Source Code</a>
+          {% endif %}
         </div>
         <article class="post-content">
           {{ content }}

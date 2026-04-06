@@ -1,7 +1,8 @@
 ---
 layout: article
 title: "ELF & Dynamic Linking (EN)"
-permalink: /Linux_ELF_Dynamic_linking_EN.html
+permalink: /articles/linux-elf-dynamic-linking/Linux_ELF_Dynamic_linking_EN.html
+source_code_url: "https://github.com/fmdlc/tty0/tree/main/articles/linux-elf-dynamic-linking/src"
 ---
 
 # **ELF & Dynamic Linking**
@@ -43,7 +44,7 @@ At a high level, an ELF file is divided into three main parts:
 
 This is not theory. You can inspect all of this from any Linux distribution. We will need a few basic tools such as `gcc`, `strace`, `ps`, `readelf`, `objdump`, and of course a text editor (`Vim` <3).
 
-> Note: the source code for the article examples is available in `./src`. There is also a minimal `README.md` there, and I included a root-level `Makefile` to build the binaries exactly as they are used in the examples.
+> Note: the source code for the article examples is available in `./src`. There is also a minimal `README.md` there, and I included a `Makefile` in this same directory to build the binaries exactly as they are used in the examples.
 
 # **A Mysterious Journey into the Linux Kernel**
 
@@ -140,7 +141,7 @@ Network connections in Unix are represented as sockets, a special kind of file. 
 
 File descriptors are inherited across `fork`, which means the child process begins with the same input and output channels as its parent. That is why when we execute a program from the shell, its input and output appear in the same terminal.
 
-![Fork and copy-on-write](assets/fork-copy-on-write.png)
+![Fork and copy-on-write](../../assets/fork-copy-on-write.png)
 
 That “copy”, however, does not mean the kernel immediately duplicates all memory. In practice, Linux uses a mechanism called **copy-on-write (CoW)**.
 
@@ -540,7 +541,7 @@ A key idea is worth remembering:
 
 When we talk about the binary stored on disk, we are talking about sections. Once executed, those are transformed into memory segments.
 
-![ELF memory layout](assets/elf-memory-layout.png)
+![ELF memory layout](../../assets/elf-memory-layout.png)
 
 This diagram shows how an ELF file on disk becomes a process in memory. At the bottom you can see sections like `.text`, `.rodata`, `.data`, and `.bss`, representing the program as it was compiled. Those sections are not loaded in isolation; the kernel groups them and maps them through the segments we discussed earlier.
 
@@ -651,6 +652,53 @@ That call transfers control to `__libc_start_main`, a function in `libc` respons
 
 But because the binary is dynamically linked, that call is not direct. It passes through two structures designed specifically for dynamic linking: the **PLT** (Procedure Linkage Table) and the **GOT** (Global Offset Table).
 
+## Relocations: when the addresses do not exist yet
+
+So far we have seen how the system can recognize an ELF binary, map its segments into memory, and begin executing it. We have also seen that, in many cases, that binary is not completely "self-contained": it depends on external libraries and on symbols that are not defined inside the file itself. That leaves us facing an uncomfortable but unavoidable question: how can a program run if many of the addresses it needs simply do not exist yet?
+
+The answer lies in one of the most important, and often invisible, mechanisms in the ELF format: relocations.
+
+When we compile a program, the compiler and the linker do everything they can to resolve addresses. However, there are cases where that is simply not possible. If the program uses dynamic libraries such as `libc`, the compiler knows that a function like `printf` will be needed, but it has no way to know the exact address where that function will live in memory. That decision happens much later, at runtime, when the operating system loads both the binary and its dependencies.
+
+This means the executable is built with conceptual "gaps". Places where there should be a valid address, but there is not one yet. Instead of failing, the ELF format adopts a much more interesting strategy: it leaves pending instructions behind. It explicitly marks every point where some later intervention will be required and delegates that responsibility to the loader.
+
+Those pending instructions are relocations.
+
+If we inspect a binary with `readelf -r`, what we find is essentially a task list. Each entry specifies an offset in memory that will need to be modified, the type of operation that must be performed, and the symbol that needs to be resolved. There is no magic here: the file is saying, quite directly, "when you load this, you will have to come here and write the real address of this symbol."
+
+```text
+%: readelf -r ./hello_world
+
+Relocation section '.rela.dyn' at offset 0x480 contains 8 entries:
+  Offset          Info           Type           Sym. Value    Sym. Name + Addend
+00000001fd90  000000000403 R_AARCH64_RELATIV                    750
+000000020008  000000000403 R_AARCH64_RELATIV                  20008
+00000001ffd8  000400000401 R_AARCH64_GLOB_DA 0000000000000000 _ITM_deregisterTM[...] + 0
+00000001ffe0  000500000401 R_AARCH64_GLOB_DA 0000000000000000 __cxa_finalize@GLIBC_2.17 + 0
+00000001ffe8  000600000401 R_AARCH64_GLOB_DA 0000000000000000 __gmon_start__ + 0
+
+Relocation section '.rela.plt' at offset 0x540 contains 5 entries:
+  Offset          Info           Type           Sym. Value    Sym. Name + Addend
+00000001ffa8  000300000402 R_AARCH64_JUMP_SL 0000000000000000 __libc_start_main@GLIBC_2.34 + 0
+00000001ffb0  000500000402 R_AARCH64_JUMP_SL 0000000000000000 __cxa_finalize@GLIBC_2.17 + 0
+00000001ffb8  000600000402 R_AARCH64_JUMP_SL 0000000000000000 __gmon_start__ + 0
+00000001ffc8  000800000402 R_AARCH64_JUMP_SL 0000000000000000 puts@GLIBC_2.17 + 0
+```
+
+At first glance the output may look fairly cryptic, but all entries follow the same logic. Each row indicates a location in memory (`Offset`) that will need to be modified, the type of operation that will be applied, and, in some cases, the symbol that must be resolved.
+
+For example, entries of type `R_AARCH64_JUMP_SLOT` such as the one associated with `puts` correspond to external functions. In those cases, the dynamic linker must find the real address of the function inside `libc` and write it into the specified location. From that point on, calls to that function can be resolved correctly.
+
+By contrast, `R_AARCH64_RELATIVE` entries do not depend on external symbols. Instead, they adjust relative addresses according to where the binary was actually loaded in memory. This becomes especially important in the presence of ASLR, where addresses change on every execution.
+
+At this point the dynamic linker enters the scene. Before our program even begins executing its `main`, this component has already been working. It loads the required libraries, builds a symbol table in memory, and then walks through every relocation entry in the binary. For each one, it finds the real address of the corresponding symbol and writes it into the required location. That patching process is what transforms a partially defined binary into something fully executable.
+
+This mechanism does not happen in isolation. It is deeply connected to other structures we are about to see: the GOT and the PLT. In many cases, relocations do not write directly into the code itself, but into GOT entries. The PLT, in turn, uses those entries as jump points toward the real functions. It is a design built for flexibility: addresses may change, yet the program keeps working because it knows where to look for them indirectly.
+
+This also explains why concepts such as ASLR do not break everything. If addresses were fixed, any memory randomization would make the program stop working. But because ELF is already prepared to correct addresses at load time, it can adapt dynamically to each execution. Relocations are not just an implementation detail; they are the reason why all of this is possible.
+
+Put simply: before relocations are applied, the program contains incomplete references. After the dynamic linker does its job, those references become real addresses, ready to be executed. That is the moment when the binary stops being a template and becomes a live process in memory.
+
 ## **PLT and GOT**
 
 The PLT can be thought of as a set of tiny trampolines. Each entry represents an external function and contains the code needed to redirect execution. But the PLT itself does not know the real address of the function. That information lives in the GOT.
@@ -739,7 +787,7 @@ Contents of section .got:
 At first sight this may seem like meaningless numbers, but each of these values is an address in memory. The GOT does not store code, only pointers.
 
 <p align="center">
-![PLT, GOT and libc diagram](assets/plt-got-libc.png)
+![PLT, GOT and libc diagram](../../assets/plt-got-libc.png)
 </p>
 
 This does not happen only once, nor is it limited to `__libc_start_main`. Every time our program invokes an external function such as `printf`, the flow goes back through the PLT.
