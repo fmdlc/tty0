@@ -786,7 +786,7 @@ Contents of section .got:
 
 At first sight this may seem like meaningless numbers, but each of these values is an address in memory. The GOT does not store code, only pointers.
 
-<img src="../../assets/plt-got-flow.png" alt="PLT and GOT flow" width="640" />
+<img src="../../assets/plt-got-flow.png" alt="PLT and GOT flow" width="460" />
 
 From that point on, the GOT already contains the correct address. Subsequent calls no longer need resolution. The PLT simply reads the address from the GOT and jumps directly to the function.
 
