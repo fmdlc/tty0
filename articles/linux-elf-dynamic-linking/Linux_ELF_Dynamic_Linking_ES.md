@@ -807,10 +807,11 @@ A primera vista, esto puede parecer simplemente una serie de números sin sentid
 En el contexto del linking dinámico, cada entrada de la GOT corresponde a una función externa. Inicialmente, muchas de estas direcciones no apuntan a la función real, sino a un resolver del dynamic linker.
 
 Esto significa que, cuando el programa se ejecuta por primera vez y se invoca una función de una biblioteca externa, la PLT consulta la GOT y encuentra una dirección intermedia. Esa dirección redirige la ejecución hacia el dynamic linker, que se encarga de resolver la función en la `libc`.  
-A partir de ese momento, la misma entrada ya no apunta al resolver, sino directamente a la función en la `libc`, evitando cualquier costo adicional en llamadas posteriores.  
 <p align="center">
-![PLT and GOT flow](../../assets/plt-got-flow.png)
+<img src="../../assets/plt-got-flow.png" alt="PLT and GOT flow" width="640" />
 </p>
+
+A partir de ese momento, la misma entrada ya no apunta al resolver, sino directamente a la función en la `libc`, evitando cualquier costo adicional en llamadas posteriores.  
 
 Pero esto no es algo que ocurra una sola vez ni que esté limitado a `__libc_start_main`. Cada vez que nuestro programa invoca una función externa (como `printf`) el flujo vuelve a pasar por la PLT.  
 Podemos ver esto inspeccionando nuestro propio código. Si desensamblamos nuestra función `main`, vamos a encontrar llamadas que no apuntan directamente a la `libc`, sino a la PLT:
