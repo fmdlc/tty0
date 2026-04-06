@@ -1,0 +1,102 @@
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 0 10px;
+  font-size: 0.95rem;
+  color: #6e6e73;
+}
+
+.topbar a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.topbar a:hover {
+  color: #111111;
+}
+
+.post-content .highlighter-rouge,
+.highlight,
+.post-content pre,
+.post-content div.highlighter-rouge pre,
+pre.highlight {
+  background: #f5f3ee;
+  color: #2c2f33;
+  border: 1px solid #e2dcd2;
+  border-radius: 6px;
+}
+
+.post-content .highlighter-rouge {
+  padding: 0;
+  margin: 0 0 1em 0;
+  overflow: hidden;
+  border: 0;
+}
+
+.post-content div.highlighter-rouge pre,
+.post-content pre,
+pre.highlight {
+  margin: 0;
+  box-shadow: none;
+}
+
+.post-content :not(pre) > code,
+.post-content code.highlighter-rouge {
+  background: transparent !important;
+  color: inherit !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  font-size: 0.9em;
+  letter-spacing: -0.01em;
+  box-shadow: none !important;
+}
+
+.post-content pre code,
+.post-content pre span,
+.post-content .highlight code,
+.post-content .highlight span,
+.post-content div.highlighter-rouge code,
+.post-content div.highlighter-rouge span {
+  background: transparent !important;
+  border: 0 !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+  color: inherit;
+}
+
+.highlight .c,
+.highlight .c1,
+.highlight .cm { color: #6a737d; }
+.highlight .k,
+.highlight .kd,
+.highlight .kt,
+.highlight .kr { color: #d73a49; }
+.highlight .cp { color: #d73a49; }
+.highlight .s,
+.highlight .s1,
+.highlight .s2,
+.highlight .sa,
+.highlight .sb,
+.highlight .sc,
+.highlight .dl { color: #032f62; }
+.highlight .m,
+.highlight .mi,
+.highlight .mf,
+.highlight .mh { color: #005cc5; }
+.highlight .nf,
+.highlight .fm { color: #6f42c1; }
+.highlight .nc,
+.highlight .ne { color: #e36209; }
+.highlight .nb,
+.highlight .bp { color: #005cc5; }
+.highlight .o,
+.highlight .ow { color: #d73a49; }
+.highlight .nt { color: #22863a; }
+.highlight .na { color: #6f42c1; }
+.highlight .nv,
+.highlight .vc,
+.highlight .vg,
+.highlight .vi { color: #e36209; }

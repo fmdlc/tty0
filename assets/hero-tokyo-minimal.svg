@@ -1,0 +1,71 @@
+<svg width="1600" height="900" viewBox="0 0 1600 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1600" height="900" fill="#FBFBFA"/>
+  <rect x="0" y="0" width="1600" height="900" fill="url(#bgGlow)"/>
+
+  <rect x="1080" y="110" width="360" height="520" rx="10" fill="#FFFFFF" stroke="#EFEFEF"/>
+  <rect x="1120" y="150" width="280" height="440" rx="8" fill="#FCFCFC"/>
+  <rect x="1120" y="150" width="280" height="440" rx="8" fill="url(#windowLight)"/>
+
+  <rect x="940" y="240" width="390" height="22" rx="11" fill="#EAE7E1"/>
+  <rect x="1000" y="256" width="10" height="190" rx="5" fill="#D2CEC7"/>
+  <rect x="1258" y="256" width="10" height="190" rx="5" fill="#D2CEC7"/>
+
+  <rect x="850" y="520" width="520" height="26" rx="13" fill="#E6E2DC"/>
+  <rect x="930" y="540" width="12" height="250" rx="6" fill="#D4D0C8"/>
+  <rect x="1278" y="540" width="12" height="250" rx="6" fill="#D4D0C8"/>
+
+  <ellipse cx="1110" cy="556" rx="220" ry="34" fill="#D9D4CC"/>
+  <ellipse cx="1110" cy="560" rx="212" ry="28" fill="#EFEAE2"/>
+
+  <g opacity="0.96">
+    <rect x="978" y="460" width="196" height="118" rx="16" fill="#60656B"/>
+    <rect x="991" y="474" width="170" height="98" rx="10" fill="#737980"/>
+    <rect x="1060" y="579" width="32" height="28" rx="8" fill="#6B7178"/>
+    <rect x="1012" y="605" width="128" height="10" rx="5" fill="#7C8288"/>
+  </g>
+
+  <g opacity="0.96">
+    <rect x="1206" y="506" width="66" height="66" rx="33" fill="#F8F8F7" stroke="#D8D2C9" stroke-width="4"/>
+    <ellipse cx="1239" cy="539" rx="18" ry="10" fill="#E7D4BF"/>
+    <path d="M1270 534C1278 534 1283 539 1283 547C1283 555 1278 560 1270 560" stroke="#D8D2C9" stroke-width="4" stroke-linecap="round"/>
+  </g>
+
+  <g opacity="0.92">
+    <path d="M1150 482C1165 469 1187 469 1202 482" stroke="#1C1C1C" stroke-width="5" stroke-linecap="round"/>
+    <circle cx="1143" cy="489" r="18" stroke="#1C1C1C" stroke-width="5" fill="none"/>
+    <circle cx="1209" cy="489" r="18" stroke="#1C1C1C" stroke-width="5" fill="none"/>
+    <path d="M1161 489H1191" stroke="#1C1C1C" stroke-width="5" stroke-linecap="round"/>
+  </g>
+
+  <g opacity="0.9">
+    <path d="M913 490C913 454 940 431 976 431" stroke="#202020" stroke-width="9" stroke-linecap="round"/>
+    <path d="M1305 490C1305 454 1278 431 1242 431" stroke="#202020" stroke-width="9" stroke-linecap="round"/>
+    <rect x="957" y="425" width="24" height="18" rx="9" fill="#202020"/>
+    <rect x="1237" y="425" width="24" height="18" rx="9" fill="#202020"/>
+  </g>
+
+  <rect x="200" y="680" width="180" height="18" rx="9" fill="#ECE8E1"/>
+  <rect x="226" y="695" width="8" height="120" rx="4" fill="#D5D1CA"/>
+  <rect x="345" y="695" width="8" height="120" rx="4" fill="#D5D1CA"/>
+
+  <rect x="460" y="150" width="140" height="14" rx="7" fill="#F1EEE8"/>
+  <rect x="480" y="162" width="6" height="90" rx="3" fill="#DDD8D0"/>
+  <rect x="574" y="162" width="6" height="90" rx="3" fill="#DDD8D0"/>
+
+  <rect x="80" y="96" width="180" height="700" fill="url(#leftFade)"/>
+
+  <defs>
+    <radialGradient id="bgGlow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(1180 390) rotate(138.771) scale(685.448 990.503)">
+      <stop stop-color="#F2F2F0"/>
+      <stop offset="1" stop-color="#FBFBFA"/>
+    </radialGradient>
+    <linearGradient id="windowLight" x1="1260" y1="150" x2="1260" y2="590" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#F5F3EF"/>
+    </linearGradient>
+    <linearGradient id="leftFade" x1="80" y1="446" x2="260" y2="446" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FBFBFA"/>
+      <stop offset="1" stop-color="#FBFBFA" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+</svg>

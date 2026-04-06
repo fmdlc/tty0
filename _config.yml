@@ -1,0 +1,6 @@
+title: "ELF & Dynamic Linking"
+description: "Article series about ELF, the dynamic linker, PLT, GOT and runtime internals on Linux."
+theme: minima
+markdown: kramdown
+kramdown:
+  input: GFM

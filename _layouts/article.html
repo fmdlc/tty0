@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ page.title | escape }}</title>
+    <link rel="icon" href="{{ '/assets/favicon.svg' | relative_url }}" type="image/svg+xml">
+    <link rel="stylesheet" href="{{ '/assets/main.css' | relative_url }}">
+    <link rel="stylesheet" href="{{ '/assets/article.css' | relative_url }}">
+  </head>
+  <body>
+    <div class="page-content">
+      <div class="wrapper">
+        <div class="topbar">
+          <a href="./index.html">&#8592;</a>
+          <a href="https://github.com/fmdlc/tty0/tree/main/src">Source Code</a>
+        </div>
+        <article class="post-content">
+          {{ content }}
+        </article>
+      </div>
+    </div>
+  </body>
+</html>

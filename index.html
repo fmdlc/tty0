@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>tty0 bits</title>
+    <meta
+      name="description"
+      content="Technical article about ELF, dynamic linking, PLT, GOT and Linux runtime internals."
+    />
+    <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="./assets/site.css">
+  </head>
+  <body>
+    <header class="wrap topbar">
+      <div class="brand"><strong>Facu</strong> de la Cruz</div>
+      <nav class="nav" aria-label="Main navigation">
+        <a href="https://linkedin.com/in/fmdlc/">about</a>
+        <a href="https://github.com/fmdlc">github</a>
+      </nav>
+    </header>
+
+    <main class="wrap">
+      <section class="hero">
+        <div class="hero-inner">
+          <h1>tty0 bits</h1>
+          <p>
+            system internals, bits and random thoughts
+          </p>
+        </div>
+      </section>
+
+      <section class="content">
+        <aside class="toc">
+          <h2>Contents</h2>
+          <nav>
+            <a href="#articles">Articles</a>
+            <a href="#talks">Talks & Interviews</a>
+            <a href="#contact">Contact</a>
+          </nav>
+        </aside>
+
+        <div class="main">
+          <div class="intro-text">
+            <p>
+              A small place for technical writing around Linux, low-level
+              systems, binaries, runtime behavior and whatever else feels worth
+              documenting along the way.
+            </p>
+          </div>
+
+          <section id="articles">
+            <h2 class="section-label">Articles</h2>
+            <div class="cards">
+              <article class="card">
+                <small>Spanish</small>
+                <h3><a href="./Linux_ELF_Dynamic_Linking_ES.html">Linux ELF Dynamic Linking ES</a></h3>
+                <p>Versión original del artículo, con ejemplos, imágenes y desarrollo completo.</p>
+                <a href="./Linux_ELF_Dynamic_Linking_ES.html">Read the Spanish article</a>
+              </article>
+              <article class="card">
+                <small>English</small>
+                <h3><a href="./Linux_ELF_Dynamic_linking_EN.html">Linux ELF Dynamic Linking EN</a></h3>
+                <p>English version of the article, preserving the same structure and technical progression.</p>
+                <a href="./Linux_ELF_Dynamic_linking_EN.html">Read the English article</a>
+              </article>
+              <article class="card">
+                <small>Archive</small>
+                <h3><a href="https://www.linkedin.com/pulse/gitops-building-next-generation-infrastructure-facu-de-la-cruz/">GitOps: building the next generation of infrastructure</a></h3>
+                <p>
+                  An older article originally published on LinkedIn, kept here
+                  in the archive.
+                </p>
+                <a href="https://www.linkedin.com/pulse/gitops-building-next-generation-infrastructure-facu-de-la-cruz/">
+                  Read the original article
+                </a>
+              </article>
+              <article class="card">
+                <small>Archive</small>
+                <h3><a href="./A_brief_and_real_malware_story.html">A brief and real malware story</a></h3>
+                <p>
+                  An older post from 2014, republished here from the original
+                  Codigo Unix archive.
+                </p>
+                <a href="./A_brief_and_real_malware_story.html">Read the article</a>
+              </article>
+              <article class="card">
+                <small>Archive / English</small>
+                <h3><a href="./A_brief_and_real_malware_story_EN.html">A brief and real malware story (EN)</a></h3>
+                <p>
+                  English version of the same post, preserved in the archive.
+                </p>
+                <a href="./A_brief_and_real_malware_story_EN.html">Read the English article</a>
+              </article>
+            </div>
+          </section>
+
+          <section id="talks">
+            <h2 class="section-label">Talks & Interviews</h2>
+            <div class="note-list">
+              <div class="note-item">
+                <a class="note-thumb" href="https://www.youtube.com/watch?v=l4CS6JKIqAw">
+                  <img src="https://img.youtube.com/vi/l4CS6JKIqAw/hqdefault.jpg" alt="Clase abierta Ekoparty Hackademy thumbnail">
+                </a>
+                <div>
+                  <small>Talk / Spanish</small>
+                  <a href="https://www.youtube.com/watch?v=l4CS6JKIqAw">
+                    Clase abierta Ekoparty Hackademy: Fundamentals of Hacking and Defense
+                  </a>
+                  <p>
+                    Open class recorded for Ekoparty Hackademy.
+                  </p>
+                </div>
+              </div>
+              <div class="note-item">
+                <a class="note-thumb" href="https://www.youtube.com/watch?v=8uBwgepNbos">
+                  <img src="https://img.youtube.com/vi/8uBwgepNbos/hqdefault.jpg" alt="Building the Next Generation Infrastructure thumbnail">
+                </a>
+                <div>
+                  <small>Talk / Spanish</small>
+                  <a href="https://www.youtube.com/watch?v=8uBwgepNbos">
+                    Building the Next Generation Infrastructure
+                  </a>
+                  <p>
+                    Talk for the DevSecOps Community Hub.
+                  </p>
+                </div>
+              </div>
+              <div class="note-item">
+                <a class="note-thumb" href="https://www.youtube.com/watch?v=6Yc1M-kiZ54">
+                  <img src="https://img.youtube.com/vi/6Yc1M-kiZ54/hqdefault.jpg" alt="Ekoparty: Meet the Hacker thumbnail">
+                </a>
+                <div>
+                  <small>Interview / Spanish</small>
+                  <a href="https://www.youtube.com/watch?v=6Yc1M-kiZ54">
+                    Ekoparty: Meet the Hacker
+                  </a>
+                  <p>
+                    Interview by Fede Pacheco.
+                  </p>
+                </div>
+              </div>
+              <div class="note-item">
+                <a class="note-thumb" href="https://www.youtube.com/watch?v=hI653-iHur4">
+                  <img src="https://img.youtube.com/vi/hI653-iHur4/hqdefault.jpg" alt="Ekoparty 2020 - DevSecOps Space thumbnail">
+                </a>
+                <div>
+                  <small>Talk / Spanish</small>
+                  <a href="https://www.youtube.com/watch?v=hI653-iHur4">
+                    Ekoparty 2020 - DevSecOps Space: Building the next generation infrastructure
+                  </a>
+                  <p>
+                    One of the most important talks in the archive.
+                  </p>
+                </div>
+              </div>
+              <div class="note-item">
+                <a class="note-thumb" href="https://www.youtube.com/watch?v=i4k3JBB6uLU">
+                  <img src="https://img.youtube.com/vi/i4k3JBB6uLU/hqdefault.jpg" alt="GitOps, construindo a infraestrutura de próxima geração thumbnail">
+                </a>
+                <div>
+                  <small>Talk / Spanish (Portuguese subtitles)</small>
+                  <a href="https://www.youtube.com/watch?v=i4k3JBB6uLU">
+                    GitOps, construindo a infraestrutura de próxima geração
+                  </a>
+                  <p>
+                    Talk in Spanish with Portuguese subtitles.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section id="contact">
+            <p class="signature-title">Contact</p>
+            <div class="contact-card">
+              <div class="contact-head">
+                <p class="contact-name">Facu de la Cruz (<code>tty0</code>)</p>
+                <p class="contact-role">Kernel Hacker / Site Reliability Engineer</p>
+              </div>
+              <div class="contact-links">
+                <a class="contact-link" href="mailto:fmdlc.unix@gmail.com">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <rect x="3" y="5" width="18" height="14" rx="2"></rect>
+                    <path d="M3 7l9 6 9-6"></path>
+                  </svg>
+                  <span>fmdlc.unix@gmail.com</span>
+                </a>
+                <a class="contact-link" href="https://linkedin.com/in/fmdlc/">
+                  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M6.94 8.5A1.56 1.56 0 1 0 6.94 5.38a1.56 1.56 0 0 0 0 3.12ZM5.62 9.75h2.64V18H5.62V9.75Zm4.29 0h2.53v1.13h.04c.35-.67 1.22-1.38 2.52-1.38 2.7 0 3.2 1.78 3.2 4.09V18h-2.64v-3.92c0-.94-.02-2.14-1.3-2.14-1.3 0-1.5 1.02-1.5 2.07V18H9.91V9.75Z"/>
+                  </svg>
+                  <span>linkedin.com/in/fmdlc/</span>
+                </a>
+              </div>
+            </div>
+            <p class="license-note">
+              All material published here is released under the
+              <a href="./LICENSE">BSD-3-Clause License</a>.
+            </p>
+          </section>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
