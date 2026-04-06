@@ -673,7 +673,7 @@ bl __libc_start_main@plt
 
 Esta llamada transfiere el control a `__libc_start_main`, una función de la `libc` encargada de continuar la ejecución del programa. A partir de este punto, la `libc` (o `glibc` en GNU) toma el control: inicializa el entorno necesario y finalmente invoca a la función `main` de nuestro programa. Pero hay un detalle clave: como nuestro binario está linkeado dinámicamente, esa llamada no es directa.
 
-## Relocations: cuando las direcciones todavía no existen
+## **Relocations: cuando las direcciones todavía no existen**
 
 Hasta ahora vimos cómo el sistema puede reconocer un binario ELF, mapear sus segmentos en memoria y comenzar su ejecución. También vimos que, en muchos casos, ese binario no está completamente “cerrado”: depende de librerías externas y de símbolos que no están definidos dentro del propio archivo. Esto nos deja frente a una pregunta bastante incómoda pero inevitable: ¿cómo puede ejecutarse un programa si muchas de las direcciones que necesita simplemente no existen todavía?
 

@@ -652,7 +652,7 @@ That call transfers control to `__libc_start_main`, a function in `libc` respons
 
 But because the binary is dynamically linked, that call is not direct. It passes through two structures designed specifically for dynamic linking: the **PLT** (Procedure Linkage Table) and the **GOT** (Global Offset Table).
 
-## Relocations: when the addresses do not exist yet
+## **Relocations: when the addresses do not exist yet**
 
 So far we have seen how the system can recognize an ELF binary, map its segments into memory, and begin executing it. We have also seen that, in many cases, that binary is not completely "self-contained": it depends on external libraries and on symbols that are not defined inside the file itself. That leaves us facing an uncomfortable but unavoidable question: how can a program run if many of the addresses it needs simply do not exist yet?
 
