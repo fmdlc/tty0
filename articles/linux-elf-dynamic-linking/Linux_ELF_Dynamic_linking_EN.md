@@ -17,6 +17,14 @@ We have grown used to things "just working", but that comfort comes at a price: 
 
 This article is born out of the need to recover that lost interest in what happens in the shadows of the operating system. The idea of this series is to resume the path I began years ago on the now-defunct [CodigoUnix.com.ar](http://www.codigounix.com.ar) and unravel the supposed "black magic" that takes place between the keyboard and the processor. Spoiler: there is no magic, only data structures, calling conventions, and perfectly orchestrated memory jumps.
 
+I have written about this before in what used to be my personal blog, and in practice still is, even though I have not updated it in a long time:
+
+- [Linux x86 Adjacent Memory Overflows](https://codigounix.blogspot.com/2012/10/linux-x86-adjacent-memory-overflows.html)
+- [POSIX, System V, Executable and Linkeable Format](https://codigounix.blogspot.com/2012/05/posix-system-v-executable-and-linkeable.html)
+- [POSIX, INTMAX and UINTMAX](https://codigounix.blogspot.com/2012/05/posix-intmax-and-intmax.html)
+
+Still, I think the landscape changed too much, and it makes sense to summarize it again in a single article. Also, if you understand Spanish, there is a class I gave for Ekoparty [Hackademy](https://ekoparty.org/hackademy/) that is probably worth watching after reading this: [Clase abierta Ekoparty Hackademy: Fundamentals of Hacking and Defense](https://www.youtube.com/watch?v=l4CS6JKIqAw&t=3432s)
+
 In this installment, we are going down into the mud. We are going to dissect the ELF format (*Executable and Linkable Format*), the behavior of the Dynamic Linker, and the critical structures that allow a handful of static bytes on disk to become a dynamic entity in memory. Welcome back to the depths. It is time to stop staring at the surface and finally understand what is really happening down there.
 
 ```text

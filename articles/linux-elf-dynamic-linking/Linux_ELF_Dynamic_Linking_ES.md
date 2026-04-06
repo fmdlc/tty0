@@ -17,6 +17,14 @@ Nos hemos acostumbrado a que las cosas "simplemente funcionan", pero esa comodid
 
 Este artículo nace de la necesidad de recuperar ese interés perdido por lo que ocurre en las sombras del sistema operativo. La idea de esta serie es retomar el camino que empecé hace años en el extinto [CodigoUnix.com.ar](http://www.codigounix.com.ar) y desentrañar la supuesta "magia negra" que ocurre entre el teclado y el procesador. Spoiler: no hay magia, solo estructuras de datos, convenciones de llamada y saltos de memoria perfectamente orquestados.
 
+Ya escribí sobre estos temas en lo que en su momento fue mi blog personal, y en rigor todavía lo es, aunque hace bastante que no lo actualizo:
+
+- [Linux x86 Adjacent Memory Overflows](https://codigounix.blogspot.com/2012/10/linux-x86-adjacent-memory-overflows.html)
+- [POSIX, System V, Executable and Linkeable Format](https://codigounix.blogspot.com/2012/05/posix-system-v-executable-and-linkeable.html)
+- [POSIX, INTMAX and UINTMAX](https://codigounix.blogspot.com/2012/05/posix-intmax-and-intmax.html)
+
+De todos modos, creo que el panorama cambió demasiado y que vale la pena resumirlo de nuevo en un solo artículo. Además, hay una clase que di para la Ekoparty [Hackademy](https://ekoparty.org/hackademy/) que probablemente valga la pena ver después de leer esto: [Clase abierta Ekoparty Hackademy: Fundamentals of Hacking and Defense](https://www.youtube.com/watch?v=l4CS6JKIqAw&t=3432s)
+
 En esta entrega, vamos a bajar al fango. Vamos a diseccionar el formato ELF (*Executable and Linkable Format*), el comportamiento del Dynamic Linker y las estructuras críticas que permiten que un puñado de bytes estáticos en el disco se conviertan en una entidad dinámica en la memoria. Bienvenidos de nuevo a las profundidades. Es hora de dejar de mirar la superficie y entender, finalmente, qué es lo que realmente está pasando ahí abajo.
 
 ```text
