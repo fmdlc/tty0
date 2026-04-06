@@ -24,8 +24,9 @@
 pre.highlight {
   background: #f5f3ee;
   color: #2c2f33;
-  border: 1px solid #e2dcd2;
-  border-radius: 6px;
+  border: 0;
+  border-radius: 8px;
+  box-shadow: inset 0 0 0 1px rgba(189, 179, 165, 0.28);
 }
 
 .post-content .highlighter-rouge {
@@ -39,7 +40,6 @@ pre.highlight {
 .post-content pre,
 pre.highlight {
   margin: 0;
-  box-shadow: none;
 }
 
 .post-content :not(pre) > code,
